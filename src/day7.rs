@@ -11,7 +11,7 @@ pub fn part1() {
     println!("Running day7 part1!");
 
     //contents = String::from("3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0");
-/*
+
     let mut best_output = 0;
     for A in 0..5 {
         for B in 0..5 {
@@ -22,31 +22,49 @@ pub fn part1() {
                             B != C && B != D && B != E &&
                             C != D && C != E &&
                             D != E {
+
+                            let (ta, ra) = mpsc::channel();
+
+                            let (tb, rb) = mpsc::channel();
+                            let tb1 = mpsc::Sender::clone(&tb);
+
+                            let (tc, rc) = mpsc::channel();
+                            let tc1 = mpsc::Sender::clone(&tc);
+
+                            let (td, rd) = mpsc::channel();
+                            let td1 = mpsc::Sender::clone(&td);
+
+                            let (te, re) = mpsc::channel();
+                            let te1 = mpsc::Sender::clone(&te);
+
+                            let (tfinal, rfinal) = mpsc::channel();
+
+                            ta.send(A);
+                            ta.send(0);
+                            tb1.send(B);
+                            tc1.send(C);
+                            td1.send(D);
+                            te1.send(E);
+
                             let mut output = 0;
                             let mut contents = utils::read_whole_file("inputs/day7.txt");
                             //contents = String::from("3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0");
-                            println!("\trunning A with input {}", A);
-                            output = intcode_part_1(contents, A, output);
+                            output = intcode_part_1(contents, ra, tb);
                             contents = utils::read_whole_file("inputs/day7.txt");
                             //contents = String::from("3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0");
-                            println!("\trunning B with input {}", B);
-                            output = intcode_part_1(contents, B, output);
+                            output = intcode_part_1(contents, rb, tc);
                             contents = utils::read_whole_file("inputs/day7.txt");
                             //contents = String::from("3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0");
-                            println!("\trunning C with input {}", C);
-                            output = intcode_part_1(contents, C, output);
+                            output = intcode_part_1(contents, rc, td);
                             contents = utils::read_whole_file("inputs/day7.txt");
                             //contents = String::from("3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0");
-                            println!("\trunning D with input {}", D);
-                            output = intcode_part_1(contents, D, output);
+                            output = intcode_part_1(contents, rd, te);
                             contents = utils::read_whole_file("inputs/day7.txt");
                             //contents = String::from("3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0");
-                            println!("\trunning E with input {}", E);
-                            output = intcode_part_1(contents, E, output);
+                            output = intcode_part_1(contents, re, tfinal);
 
                             if best_output == 0 || best_output < output {
                                 best_output = output;
-                                println!("\t\touput {} from last amplifier wast best yet with amps: A={}, B={}, C={}, D={}, E={}", best_output, A, B, C, D, E);
                             }
                         }
                     }
@@ -55,8 +73,7 @@ pub fn part1() {
         }
     }
 
-    println!("best output = {}", best_output);
-    */
+    println!("\tbest output = {}", best_output);
     println!("Completed day7 part1!\n");
 }
 
@@ -104,45 +121,35 @@ pub fn part2() {
                                 let mut output = 0;
                                 let mut contents = utils::read_whole_file("inputs/day7.txt");
                                 //contents = String::from("3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5");
-                                println!("\trunning A with input {}", A);
                                 output = intcode_part_1(contents, ra, tb);
-                                println!("\tfinished A");
                             });
 
                             thread::spawn(move || {
                                 let mut output = 0;
                                 let mut contents = utils::read_whole_file("inputs/day7.txt");
                                 //contents = String::from("3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5");
-                                println!("\trunning B with input {}", B);
                                 output = intcode_part_1(contents, rb, tc);
-                                println!("\tfinished B");
                             });
 
                             thread::spawn(move || {
                                 let mut output = 0;
                                 let mut contents = utils::read_whole_file("inputs/day7.txt");
                                 //contents = String::from("3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5");
-                                println!("\trunning C with input {}", C);
                                 output = intcode_part_1(contents, rc, td);
-                                println!("\tfinished C");
                             });
 
                             thread::spawn(move || {
                                 let mut output = 0;
                                 let mut contents = utils::read_whole_file("inputs/day7.txt");
                                 //contents = String::from("3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5");
-                                println!("\trunning D with input {}", D);
                                 output = intcode_part_1(contents, rd, te);
-                                println!("\tfinished D");
                             });
 
                             thread::spawn(move || {
                                 let mut output = 0;
                                 let mut contents = utils::read_whole_file("inputs/day7.txt");
                                 //contents = String::from("3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5");
-                                println!("\trunning E with input {}", E);
                                 output = intcode_part_1(contents, re, ta);
-                                println!("\tfinished E");
                                 tfinal.send(output);
                             });
 
@@ -150,7 +157,6 @@ pub fn part2() {
 
                             if best_output == 0 || best_output < output {
                                 best_output = output;
-                                println!("\t\touput {} from last amplifier wast best yet with amps: A={}, B={}, C={}, D={}, E={}", best_output, A, B, C, D, E);
                             }
                         }
                     }
@@ -159,8 +165,7 @@ pub fn part2() {
         }
     }
 
-    println!("best output = {}", best_output);
-
+    println!("\tbest output = {}", best_output);
     println!("Completed day7 part2!\n");
 }
 
@@ -246,11 +251,9 @@ fn intcode_part_1(mut contents: String, rx: Receiver<i32>, tx: Sender<i32>) -> i
         } else if op_code == 3 {
             let input = rx.recv().unwrap();
             program.insert(first_param_index, input);
-            println!("\t\tinputting value: {}", input );
         } else if op_code == 4 {
             output = *program.get(&first_param_index).unwrap_or(&0);
             tx.send(output);
-            println!("\t\tprogram output: {}", output );
         } else if op_code == 5 || op_code == 6 {
             let first_number = *program.entry(first_param_index).or_insert(0);
             let jump = if op_code == 5 {
