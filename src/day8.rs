@@ -74,6 +74,7 @@ pub fn part2() {
 
     println!("\n\tfinal image");
     print_pixels(&pixels, pixels_tall, pixels_wide);
+    create_image_file("outputs/day8.png", &pixels);
 
     println!("Completed day8 part2!\n");
 }
@@ -107,24 +108,18 @@ fn print_pixels(pixels: &Vec<i32>, pixels_tall: i32, pixels_wide: i32) {
 fn create_image_file(file_name: &str, pixels: &Vec<i32>) {
     let mut image_buffer = image::ImageBuffer::new(25, 6);
 
-    /*let buffer: &[u8] = pixels.into_iter()
-        .map(|pixel: i32| {Rgb([pixel,pixel,pixel])})
-        .collect()
-        .into_boxed_slice()
-        .borrow();
-*/
     for x in 0..25 {
         for y in 0..6 {
             let pixel = pixels[(y*25) + x];
             let u8_pixel: u8 = if pixel == 0 {
-                0u8
-            } else {
                 1u8
+            } else {
+                0u8
             };
-            image_buffer.put_pixel(x as u32, y as u32, Rgb([u8_pixel,u8_pixel,u8_pixel]))
+            image_buffer.put_pixel(x as u32, y as u32, Rgb([u8_pixel * u8::max_value(),u8_pixel * u8::max_value(),u8_pixel * u8::max_value()]))
         }
     }
 
-    image_buffer.save(file_name);
+    image_buffer.save(file_name).unwrap();
 
 }
