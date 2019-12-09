@@ -59,13 +59,9 @@ pub fn part2() {
     let layers: i32 = pixels_in_image / pixels_per_layer;
 
     let mut pixels: Vec<i32> = get_array_of_layer_pixels(raw_image.as_str(), layers-1, pixels_per_layer);
-    println!("\n\tlayer {}", layers-1);
-    print_pixels(&pixels, pixels_tall, pixels_wide);
 
     for layer_index in (0..layers-1).rev() {
         let layer_array: Vec<i32> = get_array_of_layer_pixels(raw_image.as_str(), layer_index, pixels_per_layer);
-        println!("\n\tlayer {}", layer_index);
-        print_pixels(&layer_array, pixels_tall, pixels_wide);
 
         for pixel_index in 0..pixels_per_layer {
             let pixel = layer_array[pixel_index as usize];
@@ -78,8 +74,6 @@ pub fn part2() {
 
     println!("\n\tfinal image");
     print_pixels(&pixels, pixels_tall, pixels_wide);
-
-    //create_image_file("outputs/day8.png", &pixels);
 
     println!("Completed day8 part2!\n");
 }
