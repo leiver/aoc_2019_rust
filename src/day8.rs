@@ -72,8 +72,7 @@ pub fn part2() {
 
     }
 
-    println!("\n\tfinal image");
-    print_pixels(&pixels, pixels_tall, pixels_wide);
+    println!("\n\tOutput in outputs/day8.png");
     create_image_file("outputs/day8.png", &pixels);
 
     println!("Completed day8 part2!\n");

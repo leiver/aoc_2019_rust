@@ -24,9 +24,9 @@ pub fn part2() {
 
     let output = hull_painting_robot(program, 1, true);
 
-    println!("\tThe robot painted {} panels", output);
+    println!("\tOutput in outputs/day11.png");
 
-    println!("Completed day11 part1!\n");
+    println!("Completed day11 part2!\n");
 }
 
 fn hull_painting_robot(program: String, first_input: i64, create_image: bool) -> i32 {
@@ -49,7 +49,7 @@ fn hull_painting_robot(program: String, first_input: i64, create_image: bool) ->
     let mut x = 0;
     let mut y = 0;
 
-    let mut direction = (-1,0);
+    let mut direction = (0,-1);
     let mut panels_painted = 0;
 
     panels.insert((0,0),first_input);
@@ -110,8 +110,8 @@ fn hull_painting_robot(program: String, first_input: i64, create_image: bool) ->
     }
     if create_image {
         let mut pixels: Vec<i32> = Vec::new();
-        for x in min_x..max_x + 1 {
-            for y in min_y..max_y + 1 {
+        for y in min_y..max_y + 1 {
+            for x in min_x..max_x + 1 {
                 let mut panel = *panels.entry((x, y)).or_insert(0);
                 pixels.push(panel as i32);
             }

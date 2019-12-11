@@ -16,7 +16,7 @@ pub fn part1() {
     ta.send(1);
     let output = intcode::intcode(contents, ra, tfinal);
 
-    println!("final output: {}", output);
+    println!("\tFinal output: {}", output);
     println!("Completed day9 part1!\n");
 }
 
@@ -33,7 +33,7 @@ pub fn part2() {
     ta.send(2);
     let output = intcode::intcode(contents, ra, tfinal);
 
-    println!("final output: {}", output);
+    println!("\tFinal output: {}", output);
 
     println!("Completed day9 part2!\n");
 }
