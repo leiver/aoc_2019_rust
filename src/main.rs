@@ -8,10 +8,11 @@ mod day7;
 mod day8;
 mod day9;
 mod day10;
+mod day11;
 mod common;
 
 fn main() {
-
+/*
     day1::part1();
     day1::part2();
 
@@ -41,4 +42,7 @@ fn main() {
 
     day10::part1();
     day10::part2();
+*/
+    day11::part1();
+    day11::part2();
 }
