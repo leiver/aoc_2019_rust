@@ -9,8 +9,8 @@ pub fn intcode(mut contents: String, rx: Receiver<i64>, tx: Sender<i64>) -> i64 
     let mut program: HashMap<i64, i64> = HashMap::new();
     let mut index: i64 = 0;
     for value in contents.split(",") {
-        let value = value.parse::<i64>().unwrap();
         //println!("value={}", value);
+        let value = value.trim().parse::<i64>().unwrap();
         program.insert(index, value);
         index += 1;
     }
@@ -97,12 +97,12 @@ pub fn intcode(mut contents: String, rx: Receiver<i64>, tx: Sender<i64>) -> i64 
         } else if op_code == 3 {
 
             let input = rx.recv().unwrap();
-            //println!("\tinput: {}", input);
+            println!("\tinput: {}", input);
 
             program.insert(first_param_index, input);
         } else if op_code == 4 {
             output = *program.get(&first_param_index).unwrap_or(&0);
-            //println!("\toutput: {}", output);
+            println!("\toutput: {}", output);
             tx.send(output);
         } else if op_code == 9 {
             let number = *program.entry(first_param_index).or_insert(0);
