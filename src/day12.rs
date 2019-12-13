@@ -94,9 +94,9 @@ pub fn part2() {
 
     let (mut vx4,mut vy4,mut vz4) = (0,0,0);
 
-    let mut x_looped = 0;
-    let mut y_looped = 0;
-    let mut z_looped = 0;
+    let mut x_looped: i64 = 0;
+    let mut y_looped: i64 = 0;
+    let mut z_looped: i64 = 0;
 
     let mut steps = 0;
     loop {
@@ -110,7 +110,7 @@ pub fn part2() {
             x3 += vx3;
             x4 += vx4;
 
-            if (x1,x2,x3,x4) == (x_initial_1,x_initial_2,x_initial_3,x_initial_4) {
+            if (x1,x2,x3,x4,vx1,vx2,vx3,vx4) == (x_initial_1,x_initial_2,x_initial_3,x_initial_4,0,0,0,0) {
                 x_looped = steps;
             }
         }
@@ -122,7 +122,7 @@ pub fn part2() {
             y3 += vy3;
             y4 += vy4;
 
-            if (y1,y2,y3,y4) == (y_initial_1,y_initial_2,y_initial_3,y_initial_4) {
+            if (y1,y2,y3,y4,vy1,vy2,vy3,vy4) == (y_initial_1,y_initial_2,y_initial_3,y_initial_4,0,0,0,0) {
                 y_looped = steps;
             }
         }
@@ -134,7 +134,7 @@ pub fn part2() {
             z3 += vz3;
             z4 += vz4;
 
-            if (z1,z2,z3,z4) == (z_initial_1,z_initial_2,z_initial_3,z_initial_4) {
+            if (z1,z2,z3,z4,vz1,vz2,vz3,vz4) == (z_initial_1,z_initial_2,z_initial_3,z_initial_4,0,0,0,0) {
                 z_looped = steps;
             }
         }
@@ -144,7 +144,59 @@ pub fn part2() {
         }
     }
 
-    println!("loop count for x={}, y={}, z={}", x_looped, y_looped, z_looped);
+    let mut steps_to_initial_state = 0;
+
+    let (mut x_steps, mut y_steps, mut z_steps) = (x_looped, y_looped, z_looped);
+
+    let mut xy_merged = false;
+    let mut xz_merged = false;
+    let mut yz_merged = false;
+
+    println!("steps=x:{},y:{},z:{}", (x_steps+1i64),(y_steps+1i64),(z_steps+1i64));
+
+    while steps_to_initial_state == 0 {
+        if x_steps == y_steps && x_steps == z_steps {
+            steps_to_initial_state = x_steps;
+        } else if x_steps < y_steps && x_steps < z_steps {
+            let lowest = if y_steps < z_steps {y_steps} else {z_steps};
+            let difference = lowest - x_steps;
+            x_steps += if difference % x_looped == 0 {difference} else {x_looped * ((difference/x_looped) + 1)};
+        } else if y_steps < x_steps && y_steps < z_steps {
+            let lowest = if x_steps < z_steps {x_steps} else {z_steps};
+            let difference = lowest - y_steps;
+            y_steps += if difference % y_looped == 0 {difference} else {y_looped * ((difference/y_looped) + 1)};
+        } else if z_steps < x_steps && z_steps < y_steps {
+            let lowest = if x_steps < y_steps {x_steps} else {y_steps};
+            let difference = lowest - z_steps;
+            z_steps += if difference % z_looped == 0 {difference} else {z_looped * ((difference/z_looped) + 1)};
+        } else if x_steps == y_steps {
+            if !xy_merged {
+                xy_merged = true;
+                x_looped = x_steps;
+                y_looped = y_steps;
+            }
+            x_steps += x_looped;
+            y_steps += y_looped;
+        } else if x_steps == z_steps {
+            if !xz_merged {
+                xz_merged = true;
+                x_looped = x_steps;
+                z_looped = z_steps;
+            }
+            x_steps += x_looped;
+            z_steps += z_looped;
+        } else if y_steps == z_steps {
+            if !yz_merged {
+                yz_merged = true;
+                z_looped = z_steps;
+                y_looped = y_steps;
+            }
+            z_steps += z_looped;
+            y_steps += y_looped;
+        }
+    }
+
+    println!("\tSteps to initial state = {}", steps_to_initial_state);
 
     println!("Completed day12 part1!\n");
 }
