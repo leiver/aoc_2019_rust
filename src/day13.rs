@@ -71,35 +71,6 @@ pub fn part2() {
     let mut score = 0;
 
     loop {
-        if t_input. {
-            println!("\t\tx was not ready, parsing");
-            let (vx, vy) = ball_vel;
-            let mut joystick_input = 0;
-            if (vy > 0) {
-                let (pad_x, pad_y) = paddle;
-                let (ball_x, ball_y) = ball;
-                let (mut temp_ball_x, mut temp_ball_y) = ball;
-                let mut temp_vx = vx;
-                while temp_ball_y != pad_y {
-                    temp_ball_y += 1;
-                    let mut next_x = temp_ball_x + temp_vx;
-                    let tile = *game_board.entry((temp_ball_x,temp_ball_y)).or_insert(0);
-                    if tile == 1 {
-                        next_x -= temp_vx;
-                        temp_vx *= -1;
-                    }
-                    temp_ball_x = next_x;
-                }
-                let distance_from_destination = temp_ball_x - pad_x;
-                joystick_input = if distance_from_destination == 0 {
-                    0
-                } else {
-                    distance_from_destination / distance_from_destination.abs()
-                };
-                println!("\t\tmoving paddle towards projected ball position {} from paddle position {} with joystick input {}", temp_ball_x, pad_x, joystick_input);
-            }
-            t_input.send(joystick_input);
-        }
         let x = r_output.recv().unwrap();
         if x == -99 {
             break;
@@ -113,12 +84,13 @@ pub fn part2() {
             break;
         }
 
-        println!("\t\treceived input x={},y={},output={}", x, y, output);
+        //println!("\t\treceived input x={},y={},output={}", x, y, output);
         if x == -1 && y == 0 {
             score = output;
+            //println!("\t\tupdating score to {}", score);
         } else if output == 3 {
             let (prev_x, prev_y) = paddle;
-            println!("\t\tnew paddle coordinate x={},y={} from previous x={},y={}", x, y, prev_x, prev_y);
+            //println!("\t\tnew paddle coordinate x={},y={} from previous x={},y={}", x, y, prev_x, prev_y);
             paddle = (x,y);
         } else if output == 4 {
             let (prev_x, prev_y) = ball;
@@ -139,10 +111,83 @@ pub fn part2() {
             }
             ball = (x,y);
             ball_vel = (new_vx, new_vy);
-            println!("\t\tnew ball position x={},y={} and vel x={},y={}, from position x={},y={} and vel x={},y={}", x, y, new_vx, new_vy, prev_x, prev_y, prev_vx, prev_vy);
+            //println!("\t\tnew ball position x={},y={} and vel x={},y={}, from position x={},y={} and vel x={},y={}", x, y, new_vx, new_vy, prev_x, prev_y, prev_vx, prev_vy);
+
+            let mut joystick_input = 0;
+            if paddle != (0,0) {
+                //let mut next_ball_x = ball.0 + ball_vel.0;
+                //let next_ball_y = ball.1 + ball_vel.1;
+                //let next_ball_tile = *game_board.entry((next_ball_x, next_ball_y)).or_insert(0);
+                //let next_ball_tile2 = *game_board.entry((next_ball_x, ball.1)).or_insert(0);
+                //let next_ball_tile3 = *game_board.entry((ball.0, next_ball_y)).or_insert(0);
+                //println!("\t\tnext_ball_tile {} on x={},y={}", next_ball_tile, next_ball_x, next_ball_y);
+                //println!("\t\tnext_ball_tile2 {} on x={},y={}", next_ball_tile2, next_ball_x, ball.1);
+                //println!("\t\tnext_ball_tile3 {} on x={},y={}", next_ball_tile3, ball.0, next_ball_y);
+                //if next_ball_tile == 2 || next_ball_tile == 1 {
+                    //next_ball_x += (ball_vel.0 * -1) * 2;
+                //}
+                let distance_from_paddle = ball.0 - paddle.0;
+                if distance_from_paddle != 0 {
+                    joystick_input = distance_from_paddle / distance_from_paddle.abs();
+                }
+                //println!("\t\tmoving paddle towards projected ball position {} from paddle position {} with joystick input {}", ball.0, paddle.0, joystick_input);
+
+            }
+            /*if paddle != (0,0) {
+                let (pad_x, pad_y) = paddle;
+                let (ball_x, ball_y) = ball;
+                let (mut temp_ball_x, mut temp_ball_y) = ball;
+                let mut temp_vx = ball_vel.0;
+                let mut temp_vy = ball_vel.1;
+                let mut temp_game_board: HashMap<(i64,i64),i64> = HashMap::new();
+                while temp_ball_y < pad_y-1 {
+                    let mut next_y = temp_ball_y + temp_vy;
+                    let mut next_x = temp_ball_x + temp_vx;
+                    let diagonal_tile = *temp_game_board.entry((next_x,next_y))
+                        .or_insert(*game_board.entry((next_x,next_y)).or_insert(0));
+                    let x_tile = *temp_game_board.entry((next_x,temp_ball_y))
+                        .or_insert(*game_board.entry((next_x,temp_ball_y)).or_insert(0));
+                    let y_tile = *temp_game_board.entry((temp_ball_x,next_y))
+                        .or_insert(*game_board.entry((temp_ball_x,next_y)).or_insert(0));
+                    if diagonal_tile == 1 || diagonal_tile == 2 {
+                        if diagonal_tile == 2 {
+                            temp_game_board.insert((next_x, next_y), 0);
+                        }
+                        temp_vx *= -1;
+                        temp_vy *= -1;
+                        next_x -= temp_vx * 2;
+                        next_y -= temp_vy * 2;
+                    } else if x_tile == 1 || x_tile == 2 || y_tile == 1 || y_tile == 2 {
+                        if x_tile == 1 || x_tile == 2 {
+                            if x_tile == 2 {
+                                temp_game_board.insert((next_x, temp_ball_y), 0);
+                            }
+                            temp_vx *= -1;
+                            next_x -= temp_vx * 2;
+                        }
+                        if y_tile == 1 || y_tile == 2 {
+                            if y_tile == 2 {
+                                temp_game_board.insert((temp_ball_x, next_y), 0);
+                            }
+                            temp_vy *= -1;
+                            next_y -= temp_vy * 2;
+                        }
+                    }
+                    temp_ball_x = next_x;
+                    temp_ball_y = next_y;
+                }
+                let distance_from_destination = temp_ball_x - pad_x;
+                joystick_input = if distance_from_destination == 0 {
+                    0
+                } else {
+                    distance_from_destination / distance_from_destination.abs()
+                };
+                println!("\t\tmoving paddle towards projected ball position {} from paddle position {} with joystick input {}", temp_ball_x, pad_x, joystick_input);
+            }*/
+            t_input.send(joystick_input);
         }
         if x != -1 || y != 0 {
-            println!("\t\tinserted {} on game board coordinate x={},y={}", output, x, y);
+            //println!("\t\tinserted {} on game board coordinate x={},y={}", output, x, y);
             game_board.insert((x, y), output);
         }
     }
