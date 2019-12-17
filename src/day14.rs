@@ -5,6 +5,7 @@ use std::borrow::Borrow;
 use std::fs::File;
 use std::fs;
 use std::io::{BufRead, BufReader, Lines};
+use std::time::{Duration, Instant};
 
 pub fn part1<'a>() {
     println!("Running day14 part1!");
@@ -93,6 +94,7 @@ pub fn part1<'a>() {
 
 pub fn part2() {
     println!("Running day14 part2!");
+    let mut start = Instant::now();
 
     let file = utils::read_whole_file("inputs/day14.txt");
 
@@ -129,10 +131,18 @@ pub fn part2() {
     let mut ore = 0;
     let mut fuel_produced = 0;
 
+    let mut five_min_duration = Instant::now();
+
     while ore <= 1_000_000_000_000i64 {
         if stack.is_empty() {
             fuel_produced += 1;
             stack.push((('F','U','E','L','?'), 1));
+            let duration = five_min_duration.elapsed();
+            if duration.as_secs() > 300 {
+                five_min_duration = Instant::now();
+                let total_duration = start.elapsed();
+                println!("after 5 more min of total time {:?}, {} fuel is produced using {} ore", total_duration, fuel_produced, ore);
+            }
         }
         let (code, mut amount_needed) = stack.pop().unwrap();
         //println!("processing {:?} with amount needed:{}", code, amount_needed);
@@ -175,8 +185,9 @@ pub fn part2() {
             }
         }
     }
+    let duration = start.elapsed();
 
-    println!("\tfuel produced = {}", fuel_produced);
+    println!("\tfuel produced = {} in {:?}", fuel_produced, duration);
 
     println!("Completed day14 part1!\n");
 }
